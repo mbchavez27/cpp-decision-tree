@@ -1,6 +1,6 @@
 #include <iostream>
-#include "utils/gini.hpp"
-#include "utils/node.hpp"
+#include "../utils/gini.hpp"
+#include "../utils/node.hpp"
 #include <unordered_map>
 
 using namespace std;

@@ -1,5 +1,5 @@
-#include "utils/decision_tree.hpp"
-#include "utils/gini.hpp"
+#include "../utils/decision_tree.hpp"
+#include "../utils/gini.hpp"
 #include <algorithm>
 #include <iostream>
 #include <set>

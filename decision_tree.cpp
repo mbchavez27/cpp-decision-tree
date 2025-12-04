@@ -14,7 +14,7 @@ DecisionTree::DecisionTree(int max_depth)
 void DecisionTree::fit(const vector<vector<double>> &X, const vector<double> &y)
 {
     vector<int> labels(y.begin(), y.end());
-    root = build_tree(X, labels, 0);
+    root = build_tree(X, labels, 0, max_depth);
 }
 
 int DecisionTree::predict(const vector<double> &X)
@@ -23,7 +23,7 @@ int DecisionTree::predict(const vector<double> &X)
 
     while (!node->is_leaf)
     {
-        if (X[node->feature_index] > node->threshold)
+        if (X[node->feature_index] <= node->threshold)
         {
             node = node->left;
         }
@@ -38,6 +38,13 @@ int DecisionTree::predict(const vector<double> &X)
 
 vector<int> DecisionTree::predict(const vector<vector<double>> &X)
 {
+    vector<int> predictions;
+    for (const auto &sample : X)
+    {
+        predictions.push_back(predict(sample));
+    }
+
+    return predictions;
 }
 
 Node *build_tree(const vector<vector<double>> &X, const vector<int> &y, int depth, int max_depth)

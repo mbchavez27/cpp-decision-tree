@@ -92,7 +92,7 @@ Node *build_tree(const vector<vector<double>> &X, const vector<int> &y, int dept
             {
                 best_gini = gini;
                 best_feature = features;
-                best_threshold = threshold:
+                best_threshold = threshold;
             }
         }
     }

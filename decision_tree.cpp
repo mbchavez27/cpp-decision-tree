@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <set>
+#include <limits>
 
 DecisionTree::DecisionTree(int max_depth)
 {
@@ -58,33 +59,31 @@ Node *build_tree(const vector<vector<double>> &X, const vector<int> &y, int dept
 
     int best_feature = -1;
     double best_threshold = 0.0;
-    double best_gini = 0.0;
+    double best_gini = numeric_limits<double>::max();
 
-    for (int features = 0; X[0].size(); ++features)
+    for (int features = 0; features < X[0].size(); ++features)
     {
+        // Adds all threshold
         set<double> thresholds;
         for (int i = 0; i < X.size(); ++i)
         {
             thresholds.insert(X[i][features]);
         }
 
+        // Loops through the thresholds to check if given features is less then or greater than treshhold to split data
         for (double threshold : thresholds)
         {
             vector<int> left_y, right_y;
             for (int i = 0; i < X.size(); i++)
             {
                 if (X[i][features] <= threshold)
-                    left_y.push_back(X[i][features]);
+                    left_y.push_back(y[i]);
                 else
-                    right_y.push_back(X[i][features]);
+                    right_y.push_back(y[i]);
             }
 
             if (left_y.empty() || right_y.empty())
                 continue;
-
-            Node left_node, right_node;
-            left_node.labels = left_y;
-            right_node.labels = right_y;
 
             double gini = gini_split(left_y, right_y);
 
@@ -96,4 +95,36 @@ Node *build_tree(const vector<vector<double>> &X, const vector<int> &y, int dept
             }
         }
     }
+    // Fallback If no Best Feature
+    if (best_feature == -1)
+    {
+        node->is_leaf = true;
+        node->label = y[0];
+        node->labels = y;
+        return node;
+    }
+
+    // Split Data
+    vector<vector<double>> left_X, right_X;
+    vector<int> left_y, right_y;
+    for (int i = 0; i < X.size(); i++)
+    {
+        if (X[i][best_feature] <= best_threshold)
+        {
+            left_X.push_back(X[i]);
+            left_y.push_back(y[i]);
+        }
+        else
+        {
+            right_X.push_back(X[i]);
+            right_y.push_back(y[i]);
+        }
+    }
+
+    node->feature_index = best_feature;
+    node->threshold = best_threshold;
+    node->left = build_tree(left_X, left_y, depth + 1, max_depth);
+    node->right = build_tree(right_X, right_y, depth + 1, max_depth);
+
+    return node;
 }

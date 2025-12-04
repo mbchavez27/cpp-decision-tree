@@ -1,5 +1,8 @@
 #include "utils/decision_tree.hpp"
+#include "utils/gini.hpp"
+#include <algorithm>
 #include <iostream>
+#include <set>
 
 DecisionTree::DecisionTree(int max_depth)
 {
@@ -42,9 +45,55 @@ Node *build_tree(const vector<vector<double>> &X, const vector<int> &y, int dept
     node->depth = depth;
 
     // Stopping Condition
-    if (node->depth >= max_depth)
+    bool all_same = all_of(y.begin(), y.end(), [&](int val)
+                           { return val == y[0]; }); // Stopping Criterion: Check if a node is pure and should become a leaf. Meaning no split can improve it
+
+    if (all_same || depth >= max_depth)
     {
         node->is_leaf = true;
+        node->label = y[0];
+        node->labels = y;
         return node;
+    }
+
+    int best_feature = -1;
+    double best_threshold = 0.0;
+    double best_gini = 0.0;
+
+    for (int features = 0; X[0].size(); ++features)
+    {
+        set<double> thresholds;
+        for (int i = 0; i < X.size(); ++i)
+        {
+            thresholds.insert(X[i][features]);
+        }
+
+        for (double threshold : thresholds)
+        {
+            vector<int> left_y, right_y;
+            for (int i = 0; i < X.size(); i++)
+            {
+                if (X[i][features] <= threshold)
+                    left_y.push_back(X[i][features]);
+                else
+                    right_y.push_back(X[i][features]);
+            }
+
+            if (left_y.empty() || right_y.empty())
+                continue;
+
+            Node left_node, right_node;
+            left_node.labels = left_y;
+            right_node.labels = right_y;
+
+            double gini = gini_split(left_y, right_y);
+
+            if (gini < best_gini)
+            {
+                best_gini = gini;
+                best_feature = features;
+                best_threshold = threshold:
+            }
+        }
     }
 }

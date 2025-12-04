@@ -17,17 +17,14 @@ double gini_impurity(const vector<int> &y)
     return 1.0 - total_fraction_squared;
 }
 
-double gini_split(Node *node)
+double gini_split(const vector<int> &left_y, const vector<int> &right_y)
 {
-    if (!node->left || !node->right)
-        return 0.0;
+    double n_left = left_y.size();
+    double n_right = right_y.size();
+    double n_total = n_left + n_right;
 
-    double left_label = static_cast<double>(node->left->labels.size());
-    double right_label = static_cast<double>(node->right->labels.size());
-    double label_totals = left_label + right_label;
+    double gini_left = gini_impurity(left_y);
+    double gini_right = gini_impurity(right_y);
 
-    double gini_left = gini_impurity(node->left->labels);
-    double gini_right = gini_impurity(node->right->labels);
-
-    return ((left_label / label_totals) * gini_left) + ((right_label / label_totals) * gini_right);
+    return (n_left / n_total) * gini_left + (n_right / n_total) * gini_right;
 }

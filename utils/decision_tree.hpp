@@ -14,6 +14,6 @@ public:
 private:
     Node *root;
     int max_depth;
-    Node *build_tree(const vector<vector<double>> &X, const vector<int> &y, int depth);
+    Node *build_tree(const vector<vector<double>> &X, const vector<int> &y, int depth, int max_depth);
     int best_split(const vector<vector<double>> &X, const vector<int> &y, double &threshold);
 };

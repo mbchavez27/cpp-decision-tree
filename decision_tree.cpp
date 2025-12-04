@@ -36,6 +36,15 @@ vector<int> DecisionTree::predict(const vector<vector<double>> &X)
 {
 }
 
-Node *build_tree(const vector<vector<double>> &X, const vector<int> &y, int depth)
+Node *build_tree(const vector<vector<double>> &X, const vector<int> &y, int depth, int max_depth)
 {
+    Node *node = new Node();
+    node->depth = depth;
+
+    // Stopping Condition
+    if (node->depth >= max_depth)
+    {
+        node->is_leaf = true;
+        return node;
+    }
 }

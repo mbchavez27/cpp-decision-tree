@@ -1,16 +1,23 @@
 #include <iostream>
 #include "utils/gini.hpp"
 #include "utils/node.hpp"
+#include <unordered_map>
 
 using namespace std;
 
 double gini_impurity(const vector<int> &y)
 {
+    unordered_map<int, int> counts;
+
+    for (int label : y)
+        counts[label]++;
+
     double total_fraction_squared = 0;
     double sum_counts = y.size();
-    for (int i = 0; i < y.size(); i++)
+
+    for (auto &[label, count] : counts)
     {
-        double fraction = static_cast<double>(y[i]) / sum_counts;
+        double fraction = static_cast<double>(count) / sum_counts;
         total_fraction_squared += fraction * fraction;
     }
 

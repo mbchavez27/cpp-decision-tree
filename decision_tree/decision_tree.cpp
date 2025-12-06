@@ -47,7 +47,7 @@ vector<int> DecisionTree::predict(const vector<vector<double>> &X)
     return predictions;
 }
 
-Node *build_tree(const vector<vector<double>> &X, const vector<int> &y, int depth, int max_depth)
+Node *DecisionTree::build_tree(const vector<vector<double>> &X, const vector<int> &y, int depth, int max_depth)
 {
     Node *node = new Node();
     node->depth = depth;

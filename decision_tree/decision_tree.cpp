@@ -68,11 +68,11 @@ Node *DecisionTree::build_tree(const vector<vector<double>> &X, const vector<int
     double best_threshold = 0.0;
     double best_gini = numeric_limits<double>::max();
 
-    for (int features = 0; features < X[0].size(); ++features)
+    for (size_t features = 0; features < X[0].size(); ++features)
     {
         // Adds all threshold
         set<double> thresholds;
-        for (int i = 0; i < X.size(); ++i)
+        for (size_t i = 0; i < X.size(); ++i)
         {
             thresholds.insert(X[i][features]);
         }
@@ -81,7 +81,9 @@ Node *DecisionTree::build_tree(const vector<vector<double>> &X, const vector<int
         for (double threshold : thresholds)
         {
             vector<int> left_y, right_y;
-            for (int i = 0; i < X.size(); i++)
+
+            // Split Data
+            for (size_t i = 0; i < X.size(); i++)
             {
                 if (X[i][features] <= threshold)
                     left_y.push_back(y[i]);
@@ -92,8 +94,10 @@ Node *DecisionTree::build_tree(const vector<vector<double>> &X, const vector<int
             if (left_y.empty() || right_y.empty())
                 continue;
 
+            // Calculate Gini Impurity
             double gini = gini_split(left_y, right_y);
 
+            // Update Best Gini
             if (gini < best_gini)
             {
                 best_gini = gini;
@@ -102,6 +106,7 @@ Node *DecisionTree::build_tree(const vector<vector<double>> &X, const vector<int
             }
         }
     }
+
     // Fallback If no Best Feature
     if (best_feature == -1)
     {
@@ -114,7 +119,7 @@ Node *DecisionTree::build_tree(const vector<vector<double>> &X, const vector<int
     // Split Data
     vector<vector<double>> left_X, right_X;
     vector<int> left_y, right_y;
-    for (int i = 0; i < X.size(); i++)
+    for (size_t i = 0; i < X.size(); i++)
     {
         if (X[i][best_feature] <= best_threshold)
         {
